@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast, Toaster } from 'react-hot-toast'
-import { 
-  PlusIcon, 
-  ArrowPathIcon, 
-  TrashIcon, 
-  MagnifyingGlassIcon, 
-  BellIcon, 
-  UserCircleIcon, 
-  XMarkIcon,
-  ArrowRightIcon,
-  NewspaperIcon
-} from '@heroicons/react/24/outline'
+import { PlusIcon, ArrowPathIcon, TrashIcon, MagnifyingGlassIcon, BellIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 interface Player {
   name: string
@@ -36,14 +26,6 @@ interface PlayerProfile extends Player {
   preferredSide: string
   dateSigned: string
   contractEnds: string
-}
-
-interface TransferNews {
-  timestamp: Date
-  fromClub: string
-  toClub: string
-  player: string
-  fee: number
 }
 
 const POSITIONS = {
@@ -134,100 +116,38 @@ async function fetchPlayerDetails(playerName: string): Promise<Partial<PlayerPro
   }
 }
 
-// Enhanced random data generation
-const RANDOM_NAMES = [
-  'Marcus Rashford', 'Jack Grealish', 'Bukayo Saka', 'Phil Foden', 'Declan Rice',
-  'Mason Mount', 'Trent Alexander-Arnold', 'Jude Bellingham', 'Harry Kane', 'Raheem Sterling',
-  'Bruno Fernandes', 'Kevin De Bruyne', 'Mohamed Salah', 'Son Heung-min', 'Erling Haaland'
-]
-
-const RANDOM_CLUBS = [
-  'Manchester United', 'Manchester City', 'Arsenal', 'Liverpool', 'Chelsea',
-  'Tottenham', 'Newcastle', 'Aston Villa', 'Brighton', 'West Ham',
-  'Real Madrid', 'Barcelona', 'Bayern Munich', 'PSG', 'Juventus'
-]
-
-const RANDOM_NATIONALITIES = [
-  'England', 'France', 'Germany', 'Spain', 'Italy',
-  'Brazil', 'Argentina', 'Portugal', 'Belgium', 'Netherlands'
-]
-
-function generateRandomProfile(): PlayerProfile {
-  const randomName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]
-  const randomClub = RANDOM_CLUBS[Math.floor(Math.random() * RANDOM_CLUBS.length)]
-  const positions: Array<Player['position']> = ['GK', 'DF', 'CM', 'FW']
-  const randomPosition = positions[Math.floor(Math.random() * positions.length)]
-  const randomValue = Math.floor(Math.random() * 100) + 20 // Random value between 20-120M
-  const randomNationality = RANDOM_NATIONALITIES[Math.floor(Math.random() * RANDOM_NATIONALITIES.length)]
-  
-  // Generate random stats
-  const appearances = Math.floor(Math.random() * 38) // 0-38 appearances
-  const starts = Math.floor(Math.random() * appearances) // Starts less than appearances
-  const minutesPlayed = starts * 90 + (appearances - starts) * Math.floor(Math.random() * 30)
-  const goals = randomPosition === 'FW' ? Math.floor(Math.random() * 30) :
-               randomPosition === 'CM' ? Math.floor(Math.random() * 15) :
-               randomPosition === 'DF' ? Math.floor(Math.random() * 5) :
-               0 // GK rarely scores
-  
-  // Generate random dates
-  const currentYear = new Date().getFullYear()
-  const birthYear = currentYear - (Math.floor(Math.random() * 15) + 18) // Players between 18-33
-  const birthMonth = Math.floor(Math.random() * 12)
-  const birthDay = Math.floor(Math.random() * 28) + 1
-  const birthDate = new Date(birthYear, birthMonth, birthDay)
-  
-  // Contract dates
-  const signedYear = currentYear - Math.floor(Math.random() * 5)
-  const contractLength = Math.floor(Math.random() * 4) + 2 // 2-5 year contracts
-  
-  return {
-    name: randomName,
-    position: randomPosition,
-    club: randomClub,
-    value: randomValue,
-    appearances,
-    starts,
-    minutesPlayed,
-    goals,
-    yellowCards: Math.floor(Math.random() * 10),
-    redCards: Math.floor(Math.random() * 2),
-    number: `#${Math.floor(Math.random() * 99) + 1}`,
-    dateOfBirth: birthDate.toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }) + ` (age ${currentYear - birthYear})`,
-    placeOfBirth: `Random City, ${randomNationality}`,
-    nationality: randomNationality,
-    height: `${Math.floor(Math.random() * 30) + 165}cm`, // Heights between 165-195cm
-    weight: `${Math.floor(Math.random() * 30) + 65}kg`, // Weights between 65-95kg
-    preferredSide: Math.random() > 0.8 ? 'Left' : 'Right',
-    dateSigned: new Date(signedYear, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
-      .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
-    contractEnds: new Date(signedYear + contractLength, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
-      .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
-}
-
-function generateRandomPlayer(): Player {
-  const profile = generateRandomProfile()
-  return {
-    name: profile.name,
-    position: profile.position,
-    club: profile.club,
-    value: profile.value
-  }
-}
-
 function PlayerProfileModal({ player, onClose }: { player: Player, onClose: () => void }) {
-  // Generate random profile data immediately instead of loading from API
+  const [profileData, setProfileData] = useState<Partial<PlayerProfile>>({})
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadPlayerDetails = async () => {
+      setLoading(true)
+      const details = await fetchPlayerDetails(player.name)
+      setProfileData(details)
+      setLoading(false)
+    }
+
+    loadPlayerDetails()
+  }, [player.name])
+
   const profile: PlayerProfile = {
     ...player,
-    ...generateRandomProfile(),
-    name: player.name, // Keep the original name
-    position: player.position, // Keep the original position
-    club: player.club, // Keep the original club
-    value: player.value // Keep the original value
+    appearances: profileData.appearances || 0,
+    starts: profileData.starts || 0,
+    minutesPlayed: profileData.minutesPlayed || 0,
+    goals: profileData.goals || 0,
+    yellowCards: profileData.yellowCards || 0,
+    redCards: profileData.redCards || 0,
+    number: profileData.number || "#N/A",
+    dateOfBirth: profileData.dateOfBirth || "Unknown",
+    placeOfBirth: profileData.placeOfBirth || "Unknown",
+    nationality: profileData.nationality || "Unknown",
+    height: profileData.height || "Unknown",
+    weight: profileData.weight || "Unknown",
+    preferredSide: profileData.preferredSide || "Unknown",
+    dateSigned: "N/A", // These would need to come from your backend
+    contractEnds: "N/A"  // These would need to come from your backend
   }
 
   return (
@@ -247,179 +167,82 @@ function PlayerProfileModal({ player, onClose }: { player: Player, onClose: () =
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 mb-8">
-            <div>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.appearances}</div>
-                  <div className="text-gray-400">Appearances</div>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-8 mb-8">
+              <div>
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.appearances}</div>
+                    <div className="text-gray-400">Appearances</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.goals}</div>
+                    <div className="text-gray-400">Goals</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.starts}</div>
+                    <div className="text-gray-400">Starts</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.yellowCards}</div>
+                    <div className="text-gray-400">Yellow Cards</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.minutesPlayed}</div>
+                    <div className="text-gray-400">Minutes Played</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold mb-2">{profile.redCards}</div>
+                    <div className="text-gray-400">Red Cards</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.goals}</div>
-                  <div className="text-gray-400">Goals</div>
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Position:</span>
+                  <span className={`px-2 py-0.5 rounded-full text-sm ${POSITIONS[profile.position].color}`}>
+                    {POSITIONS[profile.position].label}
+                  </span>
                 </div>
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.starts}</div>
-                  <div className="text-gray-400">Starts</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Date of birth:</span>
+                  <span>{profile.dateOfBirth}</span>
                 </div>
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.yellowCards}</div>
-                  <div className="text-gray-400">Yellow Cards</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Place of birth:</span>
+                  <span>{profile.placeOfBirth}</span>
                 </div>
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.minutesPlayed}</div>
-                  <div className="text-gray-400">Minutes Played</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Nationality:</span>
+                  <span>{profile.nationality}</span>
                 </div>
-                <div>
-                  <div className="text-5xl font-bold mb-2">{profile.redCards}</div>
-                  <div className="text-gray-400">Red Cards</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Height:</span>
+                  <span>{profile.height}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Weight:</span>
+                  <span>{profile.weight}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Preferred Side:</span>
+                  <span>{profile.preferredSide}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Date signed:</span>
+                  <span>{profile.dateSigned}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Contract Ends:</span>
+                  <span>{profile.contractEnds}</span>
                 </div>
               </div>
             </div>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Position:</span>
-                <span className={`px-2 py-0.5 rounded-full text-sm ${POSITIONS[profile.position].color}`}>
-                  {POSITIONS[profile.position].label}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Date of birth:</span>
-                <span>{profile.dateOfBirth}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Place of birth:</span>
-                <span>{profile.placeOfBirth}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Nationality:</span>
-                <span>{profile.nationality}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Height:</span>
-                <span>{profile.height}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Weight:</span>
-                <span>{profile.weight}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Preferred Side:</span>
-                <span>{profile.preferredSide}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Date signed:</span>
-                <span>{profile.dateSigned}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Contract Ends:</span>
-                <span>{profile.contractEnds}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TransferModal({ player, onClose, onConfirm }: { 
-  player: Player, 
-  onClose: () => void,
-  onConfirm: (newClub: string, transferMoney: number) => void 
-}) {
-  const [newClub, setNewClub] = useState('')
-  const [transferMoney, setTransferMoney] = useState(player.value)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onConfirm(newClub, transferMoney)
-    onClose()
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-md mx-4 p-6">
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Transfer {player.name}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
-            <XMarkIcon className="h-6 w-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Current Club</label>
-            <div className="mt-1 p-2 bg-gray-50 rounded-md text-gray-500">{player.club}</div>
-          </div>
-
-          <div>
-            <label htmlFor="newClub" className="block text-sm font-medium text-gray-700">New Club</label>
-            <input
-              type="text"
-              id="newClub"
-              value={newClub}
-              onChange={(e) => setNewClub(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="transferMoney" className="block text-sm font-medium text-gray-700">
-              Transfer Fee (M€)
-            </label>
-            <input
-              type="number"
-              id="transferMoney"
-              value={transferMoney}
-              onChange={(e) => setTransferMoney(Number(e.target.value))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              min="0"
-              step="0.1"
-              required
-            />
-          </div>
-
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Confirm Transfer
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
-
-function TransferNewsBar({ news }: { news: TransferNews[] }) {
-  if (news.length === 0) return null
-
-  return (
-    <div className="bg-[#1a1a1a] text-white py-4 mb-8 rounded-lg shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center space-x-4">
-          <NewspaperIcon className="h-6 w-6 text-yellow-500" />
-          <div className="flex-1">
-            <div className="text-sm font-medium text-yellow-500">TRANSFER NEWS</div>
-            <div className="mt-1">
-              {news.map((item, index) => (
-                <div key={index} className="text-sm text-gray-300 mb-1">
-                  🚨 Fabrizio Romano: "Official Agreement in principle with {item.toClub}, €{item.fee}m fee for {item.player}. Contract might be signed tomorrow. ‼️"
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
@@ -437,9 +260,6 @@ function App() {
   })
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [transferNews, setTransferNews] = useState<TransferNews[]>([])
-  const [showTransferModal, setShowTransferModal] = useState(false)
-  const [selectedPlayerForTransfer, setSelectedPlayerForTransfer] = useState<Player | null>(null)
 
   // Load saved players from localStorage on initial render
   useEffect(() => {
@@ -518,21 +338,11 @@ function App() {
       const response = await axios.put(`/players/${index}/transfer`, null, {
         params: { new_club: newClub.trim(), transfer_money: transferMoney }
       })
-      
-      // Add transfer news
-      const transferredPlayer = players[index]
-      setTransferNews(prev => [{
-        timestamp: new Date(),
-        fromClub: transferredPlayer.club,
-        toClub: newClub,
-        player: transferredPlayer.name,
-        fee: transferMoney
-      }, ...prev.slice(0, 4)]) // Keep only last 5 news items
-
       toast.success('Transfer completed successfully!')
       const updatedPlayers = [...players]
       updatedPlayers[index] = response.data
       setPlayers(updatedPlayers)
+      // localStorage is automatically updated due to the useEffect
     } catch (error: any) {
       console.error('Error transferring player:', error)
       const errorMessage = error.response?.data?.detail || error.message || 'Transfer failed'
@@ -560,12 +370,6 @@ function App() {
       fetchPlayers() // Reload data from server
       toast.success('Local storage cleared successfully!')
     }
-  }
-
-  // Add random player function
-  const addRandomPlayer = () => {
-    const randomPlayer = generateRandomPlayer()
-    setNewPlayer(randomPlayer)
   }
 
   return (
@@ -601,20 +405,9 @@ function App() {
       </nav>
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Transfer News Bar */}
-        <TransferNewsBar news={transferNews} />
-
         {/* Add Player Form */}
         <div className="bg-white shadow-sm rounded-lg p-6 mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium text-gray-900">Add New Player</h2>
-            <button
-              onClick={addRandomPlayer}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Generate Random
-            </button>
-          </div>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Add New Player</h2>
           <form onSubmit={handleAddPlayer} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <input
               type="text"
@@ -753,12 +546,14 @@ function App() {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => {
-                            setSelectedPlayerForTransfer(player)
-                            setShowTransferModal(true)
+                            const newClub = prompt('Enter new club:')
+                            const transferMoney = parseFloat(prompt('Enter transfer fee (M€):') || '0')
+                            if (newClub && !isNaN(transferMoney)) {
+                              handleTransfer(index, newClub, transferMoney)
+                            }
                           }}
-                          className="inline-flex items-center text-blue-600 hover:text-blue-900 mr-4"
+                          className="text-blue-600 hover:text-blue-900 mr-4"
                         >
-                          <ArrowRightIcon className="h-5 w-5 mr-1" />
                           Transfer
                         </button>
                         <button
@@ -781,22 +576,6 @@ function App() {
         <PlayerProfileModal
           player={selectedPlayer}
           onClose={() => setSelectedPlayer(null)}
-        />
-      )}
-      
-      {showTransferModal && selectedPlayerForTransfer && (
-        <TransferModal
-          player={selectedPlayerForTransfer}
-          onClose={() => {
-            setShowTransferModal(false)
-            setSelectedPlayerForTransfer(null)
-          }}
-          onConfirm={(newClub, transferMoney) => {
-            const playerIndex = players.findIndex(p => p.name === selectedPlayerForTransfer.name)
-            if (playerIndex !== -1) {
-              handleTransfer(playerIndex, newClub, transferMoney)
-            }
-          }}
         />
       )}
       
