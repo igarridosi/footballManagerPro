@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast, Toaster } from 'react-hot-toast'
-import { PlusIcon, ArrowPathIcon, TrashIcon, MagnifyingGlassIcon, BellIcon, UserCircleIcon, XMarkIcon, SunIcon, MoonIcon, ArrowsUpDownIcon, FunnelIcon, ArrowRightIcon, ChartBarIcon, CalendarIcon, ChartBarSquareIcon, ArrowsRightLeftIcon, PencilIcon, TrophyIcon, UserGroupIcon } from '@heroicons/react/24/outline'
+import {  
+  ArrowPathIcon, 
+  TrashIcon, 
+  SunIcon, 
+  MoonIcon, 
+  ArrowsUpDownIcon, 
+  FunnelIcon, 
+  ArrowRightIcon,
+  CalendarIcon, 
+  ChartBarSquareIcon, 
+  ArrowsRightLeftIcon, 
+  PencilIcon, 
+  TrophyIcon, 
+  UserGroupIcon,
+  XMarkIcon 
+} from '@heroicons/react/24/outline'
 
 interface Player {
   name: string
@@ -116,7 +131,6 @@ async function fetchPlayerDetails(playerName: string): Promise<Partial<PlayerPro
   }
 }
 
-// Modificar la interfaz RandomStats para incluir más datos personales
 interface PlayerPersonalInfo {
   age: number
   birthDate: string
@@ -224,6 +238,7 @@ function generateRandomStats(position: Player['position']): RandomStats {
   }
 }
 
+// Actualizar PlayerProfileModal para ser responsivo
 function PlayerProfileModal({ player, onClose, onUpdate }: { 
   player: Player, 
   onClose: () => void,
@@ -281,22 +296,22 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
   )
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1C1C1C] text-white rounded-lg w-full max-w-4xl mx-4">
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-6">
-            <div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-[#1C1C1C] text-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="p-4 sm:p-6">
+          <div className="flex justify-between items-start mb-4 sm:mb-6">
+            <div className="space-y-2">
               {isEditing ? (
                 <input
                   type="text"
                   value={editedPlayer.name}
                   onChange={(e) => setEditedPlayer({ ...editedPlayer, name: e.target.value })}
-                  className="bg-gray-800 text-white text-4xl font-bold px-2 py-1 rounded"
+                  className="bg-gray-800 text-white text-2xl sm:text-4xl font-bold px-2 py-1 rounded w-full"
                 />
               ) : (
-                <h2 className="text-4xl font-bold">{player.name}</h2>
+                <h2 className="text-2xl sm:text-4xl font-bold">{player.name}</h2>
               )}
-              <div className="text-2xl text-gray-400 mt-2">
+              <div className="text-xl sm:text-2xl text-gray-400">
                 {isEditing ? (
                   <input
                     type="text"
@@ -305,21 +320,21 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
                     className="bg-gray-800 text-white px-2 py-1 rounded w-20"
                   />
                 ) : editedPlayer.shirtNumber}
+              </div>
             </div>
-            </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 sm:space-x-4">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white p-2"
               >
-                <PencilIcon className="h-6 w-6" />
+                <PencilIcon className="h-5 w-5" />
               </button>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-white p-2"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
             </div>
           </div>
 
@@ -328,7 +343,7 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
               <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-8 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
               <div>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
@@ -478,52 +493,7 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
   )
 }
 
-function TransferNews({ player, club, transferMoney, actualClub, onClose }: { 
-  player: string, 
-  club: string, 
-  transferMoney: number, 
-  actualClub: string,
-  onClose: () => void 
-}) {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center">
-            <img src="../fabrizio-fauna.jpg" 
-                alt="Fabrizio Fauna" 
-                className="w-12 h-12 rounded-full mr-3 object-cover border-2 border-blue-500"/>
-            <div>
-              <h3 className="font-bold text-lg">Fabrizio Fauna</h3>
-              <p className="text-gray-500 text-sm">@FabrizioFauna</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <XMarkIcon className="h-6 w-6" />
-          </button>
-        </div>
-        <p className="text-xl font-medium mb-4">
-          Here We GO!! {player} to {club}. 
-          <br/>
-          Official Agreement in principle with {actualClub}, €{transferMoney}m fee.. 🚨‼️
-        </p>
-        <div className="flex justify-end space-x-2">
-          <button className="text-blue-500 hover:text-blue-600">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.148.147.34.22.532.22s.384-.073.53-.22c.293-.293.293-.768 0-1.06l-3.5-3.5c-.293-.294-.768-.294-1.06 0l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.337-.75-.75-.75z"></path>
-            </svg>
-          </button>
-          <button className="text-red-500 hover:text-red-600">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+// Actualizar TransferModal para ser responsivo
 function TransferModal({ player, onTransfer, onClose }: {
   player: Player;
   onTransfer: (newClub: string, transferMoney: number) => void;
@@ -561,101 +531,151 @@ function TransferModal({ player, onTransfer, onClose }: {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <div className="flex justify-between items-start mb-4">
-          <h3 className="text-lg font-medium">Transfer {player.name}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <XMarkIcon className="h-6 w-6" />
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {showNewClubInput ? (
-            <div className="space-y-2">
-              <input
-                type="text"
-                placeholder="New Club Name"
-                className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
-                value={newClub}
-                onChange={(e) => setNewClub(e.target.value)}
-                required
-              />
-              <div className="flex space-x-2">
-                <button
-                  type="button"
-                  onClick={handleAddClub}
-                  className="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                  Add Club
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowNewClubInput(false)
-                    setNewClub('')
-                  }}
-                  className="flex-1 px-3 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <select
-                value={newClub}
-                onChange={(e) => setNewClub(e.target.value)}
-                className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
-                required
-              >
-                <option value="">Select Club</option>
-                {clubs.map((club) => (
-                  <option key={club} value={club}>
-                    {club}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={() => setShowNewClubInput(true)}
-                className="w-full px-3 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Add New Club
-              </button>
-            </div>
-          )}
-          <input
-            type="number"
-            placeholder="Transfer Fee (M€)"
-            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
-            value={transferMoney}
-            onChange={(e) => setTransferMoney(e.target.value)}
-            required
-            min="0"
-            step="0.1"
-          />
-          <div className="flex space-x-3">
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Complete Transfer
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              Cancel
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-md">
+        <div className="p-4 sm:p-6">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="text-lg sm:text-xl font-medium">Transfer {player.name}</h3>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2">
+              <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {showNewClubInput ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="New Club Name"
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
+                  value={newClub}
+                  onChange={(e) => setNewClub(e.target.value)}
+                  required
+                />
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                  <button
+                    type="button"
+                    onClick={handleAddClub}
+                    className="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  >
+                    Add Club
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNewClubInput(false)
+                      setNewClub('')
+                    }}
+                    className="flex-1 px-3 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <select
+                  value={newClub}
+                  onChange={(e) => setNewClub(e.target.value)}
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
+                  required
+                >
+                  <option value="">Select Club</option>
+                  {clubs.map((club) => (
+                    <option key={club} value={club}>
+                      {club}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setShowNewClubInput(true)}
+                  className="w-full px-3 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Add New Club
+                </button>
+              </div>
+            )}
+            <input
+              type="number"
+              placeholder="Transfer Fee (M€)"
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5"
+              value={transferMoney}
+              onChange={(e) => setTransferMoney(e.target.value)}
+              required
+              min="0"
+              step="0.1"
+            />
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Complete Transfer
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
-// Añadir nuevas interfaces para el filtrado y ordenación
+// Actualizar TransferNews para ser responsivo
+function TransferNews({ player, club, transferMoney, actualClub, onClose }: { 
+  player: string, 
+  club: string, 
+  transferMoney: number, 
+  actualClub: string,
+  onClose: () => void 
+}) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-lg">
+        <div className="p-4 sm:p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center space-x-3">
+              <img src="../fabrizio-fauna.jpg" 
+                  alt="Fabrizio Fauna" 
+                  className="w-10 sm:w-12 h-10 sm:h-12 rounded-full object-cover border-2 border-blue-500"/>
+              <div>
+                <h3 className="font-bold text-base sm:text-lg">Fabrizio Fauna</h3>
+                <p className="text-gray-500 text-xs sm:text-sm">@FabrizioFauna</p>
+              </div>
+            </div>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2">
+              <XMarkIcon className="h-5 w-5" />
+            </button>
+          </div>
+          <p className="text-lg sm:text-xl font-medium mb-4">
+            Here We GO!! {player} to {club}. 
+            <br/>
+            Official Agreement in principle with {actualClub}, €{transferMoney}m fee.. 🚨‼️
+          </p>
+          <div className="flex justify-end space-x-4">
+            <button className="text-blue-500 hover:text-blue-600 p-2">
+              <svg className="w-5 sm:w-6 h-5 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.148.147.34.22.532.22s.384-.073.53-.22c.293-.293.293-.768 0-1.06l-3.5-3.5c-.293-.294-.768-.294-1.06 0l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.337-.75-.75-.75z"></path>
+              </svg>
+            </button>
+            <button className="text-red-500 hover:text-red-600 p-2">
+              <svg className="w-5 sm:w-6 h-5 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface SortConfig {
   key: keyof Player
   direction: 'asc' | 'desc'
@@ -670,29 +690,11 @@ interface Filters {
   }
 }
 
-// Añadir nuevas interfaces para estadísticas y calendario
-interface PlayerStats {
-  form: number[]
-  marketValueHistory: { date: string; value: number }[]
-}
-
-interface ScheduledTransfer {
-  playerId: number
-  playerName: string
-  fromClub: string
-  toClub: string
-  transferFee: number
-  date: string
-  status: 'pending' | 'completed' | 'cancelled'
-}
-
-// Nueva interfaz para la comparación de jugadores
 interface PlayerComparison {
   players: Player[]
   selectedStats: string[]
 }
 
-// Modificar la interfaz de transferencias
 interface TransferHistory {
   playerId: number
   playerName: string
@@ -700,363 +702,6 @@ interface TransferHistory {
   toClub: string
   transferFee: number
   date: string
-}
-
-// Nueva interfaz para el análisis de mercado
-interface MarketAnalysis {
-  topTransfers: {
-    playerName: string
-    fromClub: string
-    toClub: string
-    fee: number
-    season: string
-  }[]
-  marketTrends: {
-    position: keyof typeof POSITIONS
-    averageValue: number
-    valueChange: number
-    topLeagues: {
-      league: string
-      averageValue: number
-    }[]
-  }[]
-  upcomingTransfers: {
-    playerName: string
-    currentClub: string
-    potentialClubs: string[]
-    estimatedValue: number
-  }[]
-}
-
-// Añadir nueva interfaz para Market Values
-interface MarketValue {
-  position: keyof typeof POSITIONS
-  averageValue: number
-  topPlayers: {
-    name: string
-    club: string
-    value: number
-    change: number
-  }[]
-  leagueDistribution: {
-    league: string
-    percentage: number
-  }[]
-}
-
-function MarketValuesSection({ darkMode }: { darkMode: boolean }) {
-  const marketData: MarketValue[] = [
-    {
-      position: 'FW',
-      averageValue: 42.5,
-      topPlayers: [
-        { name: 'Erling Haaland', club: 'Manchester City', value: 180, change: 30 },
-        { name: 'Kylian Mbappé', club: 'PSG', value: 180, change: -20 },
-        { name: 'Vinicius Jr.', club: 'Real Madrid', value: 150, change: 50 }
-      ],
-      leagueDistribution: [
-        { league: 'Premier League', percentage: 45 },
-        { league: 'La Liga', percentage: 25 },
-        { league: 'Bundesliga', percentage: 15 },
-        { league: 'Serie A', percentage: 10 },
-        { league: 'Ligue 1', percentage: 5 }
-      ]
-    },
-    {
-      position: 'CM',
-      averageValue: 35.8,
-      topPlayers: [
-        { name: 'Jude Bellingham', club: 'Real Madrid', value: 150, change: 70 },
-        { name: 'Rodri', club: 'Manchester City', value: 110, change: 20 },
-        { name: 'Pedri', club: 'Barcelona', value: 100, change: -5 }
-      ],
-      leagueDistribution: [
-        { league: 'Premier League', percentage: 40 },
-        { league: 'La Liga', percentage: 30 },
-        { league: 'Bundesliga', percentage: 15 },
-        { league: 'Serie A', percentage: 10 },
-        { league: 'Ligue 1', percentage: 5 }
-      ]
-    }
-  ]
-
-  return (
-    <div className={`${
-      darkMode 
-        ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
-        : 'bg-gradient-to-br from-blue-50 to-indigo-50'
-    } shadow-lg rounded-xl p-6 mb-8`}>
-      <div className="flex justify-between items-center mb-6">
-        <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-          Market Values
-        </h3>
-        <a
-          href="https://www.transfermarkt.es/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`text-sm ${darkMode ? 'text-blue-400' : 'text-blue-600'} hover:underline`}
-        >
-          View on Transfermarkt
-        </a>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {marketData.map((data, index) => (
-          <div
-            key={index}
-            className={`${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4`}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <span className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium ${
-                POSITIONS[data.position].color
-              }`}>
-                {POSITIONS[data.position].label}s
-              </span>
-              <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Avg. Value: {data.averageValue}M €
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Top Players by Value
-                </h4>
-                <div className="space-y-2">
-                  {data.topPlayers.map((player, idx) => (
-                    <div key={idx} className="flex justify-between items-center">
-                      <div>
-                        <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {player.name}
-                        </p>
-                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {player.club}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {player.value}M €
-                        </p>
-                        <p className={`text-xs ${
-                          player.change > 0 
-                            ? 'text-green-500' 
-                            : 'text-red-500'
-                        }`}>
-                          {player.change > 0 ? '+' : ''}{player.change}M €
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  League Distribution
-                </h4>
-                <div className="space-y-2">
-                  {data.leagueDistribution.map((league, idx) => (
-                    <div key={idx} className="flex items-center">
-                      <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} w-24`}>
-                        {league.league}
-                      </span>
-                      <div className="flex-1 mx-2">
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-blue-600"
-                            style={{ width: `${league.percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                      <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        {league.percentage}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function MarketAnalysisPanel({ darkMode }: { darkMode: boolean }) {
-  const [analysis, setAnalysis] = useState<MarketAnalysis>({
-    topTransfers: [
-      {
-        playerName: "Jude Bellingham",
-        fromClub: "Borussia Dortmund",
-        toClub: "Real Madrid",
-        fee: 103,
-        season: "2023/24"
-      },
-      {
-        playerName: "Enzo Fernández",
-        fromClub: "Benfica",
-        toClub: "Chelsea",
-        fee: 121,
-        season: "2022/23"
-      },
-      {
-        playerName: "Declan Rice",
-        fromClub: "West Ham",
-        toClub: "Arsenal",
-        fee: 117,
-        season: "2023/24"
-      }
-    ],
-    marketTrends: [
-      {
-        position: "FW",
-        averageValue: 45.2,
-        valueChange: 12.5,
-        topLeagues: [
-          { league: "Premier League", averageValue: 52.8 },
-          { league: "La Liga", averageValue: 48.3 },
-          { league: "Bundesliga", averageValue: 41.7 }
-        ]
-      },
-      {
-        position: "CM",
-        averageValue: 38.6,
-        valueChange: 15.2,
-        topLeagues: [
-          { league: "Premier League", averageValue: 45.1 },
-          { league: "La Liga", averageValue: 42.8 },
-          { league: "Serie A", averageValue: 36.9 }
-        ]
-      }
-    ],
-    upcomingTransfers: [
-      {
-        playerName: "Kylian Mbappé",
-        currentClub: "PSG",
-        potentialClubs: ["Real Madrid", "Liverpool", "Arsenal"],
-        estimatedValue: 180
-      },
-      {
-        playerName: "Victor Osimhen",
-        currentClub: "Napoli",
-        potentialClubs: ["Chelsea", "PSG", "Manchester United"],
-        estimatedValue: 120
-      }
-    ]
-  })
-
-  return (
-    <div className={`${
-      darkMode 
-        ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
-        : 'bg-gradient-to-br from-blue-50 to-indigo-50'
-    } shadow-lg rounded-xl p-6 mb-8`}>
-      <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-6`}>
-        Market Analysis
-      </h3>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Top Transfers */}
-        <div className={`${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4`}>
-          <h4 className={`text-md font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-4`}>
-            Recent Top Transfers
-          </h4>
-          <div className="space-y-4">
-            {analysis.topTransfers.map((transfer, index) => (
-              <div key={index} className={`${darkMode ? 'bg-gray-600' : 'bg-gray-50'} rounded-lg p-3`}>
-                <div className="flex justify-between items-center">
-                  <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {transfer.playerName}
-                  </span>
-                  <span className={`text-sm ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
-                    €{transfer.fee}M
-                  </span>
-                </div>
-                <div className="flex items-center text-sm mt-2">
-                  <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                    {transfer.fromClub}
-                  </span>
-                  <ArrowRightIcon className="h-4 w-4 mx-2" />
-                  <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                    {transfer.toClub}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Market Trends */}
-        <div className={`${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4`}>
-          <h4 className={`text-md font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-4`}>
-            Market Trends
-          </h4>
-          <div className="space-y-4">
-            {analysis.marketTrends.map((trend, index) => (
-              <div key={index} className={`${darkMode ? 'bg-gray-600' : 'bg-gray-50'} rounded-lg p-3`}>
-                <div className="flex justify-between items-center mb-2">
-                  <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {POSITIONS[trend.position].label}s
-                  </span>
-                  <span className={`text-sm ${
-                    trend.valueChange > 0 
-                      ? darkMode ? 'text-green-400' : 'text-green-600'
-                      : darkMode ? 'text-red-400' : 'text-red-600'
-                  }`}>
-                    {trend.valueChange > 0 ? '+' : ''}{trend.valueChange}%
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  {trend.topLeagues.map((league, idx) => (
-                    <div key={idx} className="flex justify-between text-sm">
-                      <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                        {league.league}
-                      </span>
-                      <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
-                        €{league.averageValue}M
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Upcoming Transfers */}
-        <div className={`${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4`}>
-          <h4 className={`text-md font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-4`}>
-            Transfer Rumors
-          </h4>
-          <div className="space-y-4">
-            {analysis.upcomingTransfers.map((transfer, index) => (
-              <div key={index} className={`${darkMode ? 'bg-gray-600' : 'bg-gray-50'} rounded-lg p-3`}>
-                <div className="flex justify-between items-center mb-2">
-                  <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {transfer.playerName}
-                  </span>
-                  <span className={`text-sm ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                    €{transfer.estimatedValue}M
-                  </span>
-                </div>
-                <div className="text-sm">
-                  <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                    Current: {transfer.currentClub}
-                  </span>
-                  <div className="mt-1">
-                    <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                      Potential: {transfer.potentialClubs.join(', ')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 function App() {
@@ -1085,10 +730,10 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [transferNews, setTransferNews] = useState<{
-    player: string;
-    club: string;
-    transferMoney: number;
-    actualClub: string;
+    player: string
+    club: string
+    transferMoney: number
+    actualClub: string
   } | null>(null)
   const [transferModalPlayer, setTransferModalPlayer] = useState<Player | null>(null)
   const [darkMode, setDarkMode] = useState(() => {
@@ -1100,10 +745,9 @@ function App() {
   const [filters, setFilters] = useState<Filters>({
     position: '',
     club: '',
-    valueRange: { min: '', max: '' } // Cambiado de number a string para mejor manejo del input
+    valueRange: { min: '', max: '' }
   })
   const [playerStats, setPlayerStats] = useState<{ [key: string]: RandomStats }>({})
-  const [scheduledTransfers, setScheduledTransfers] = useState<ScheduledTransfer[]>([])
   const [showSchedule, setShowSchedule] = useState(false)
   const [showComparison, setShowComparison] = useState(false)
   const [comparison, setComparison] = useState<PlayerComparison>({
@@ -1111,7 +755,6 @@ function App() {
     selectedStats: ['value', 'position']
   })
   const [transferHistory, setTransferHistory] = useState<TransferHistory[]>([])
-  const [showMarketAnalysis, setShowMarketAnalysis] = useState(false)
 
   // Efecto para manejar el modo oscuro
   useEffect(() => {
@@ -1135,26 +778,26 @@ function App() {
   const fetchPlayers = async () => {
     try {
       setLoading(true)
-      const savedPlayers = localStorage.getItem(STORAGE_KEY)
+    const savedPlayers = localStorage.getItem(STORAGE_KEY)
       
-      if (savedPlayers) {
-        try {
-          const parsedPlayers = JSON.parse(savedPlayers)
+    if (savedPlayers) {
+      try {
+        const parsedPlayers = JSON.parse(savedPlayers)
           if (Array.isArray(parsedPlayers) && parsedPlayers.length > 0) {
-            const validatedPlayers = parsedPlayers.map(validatePlayer)
-            setPlayers(validatedPlayers)
+        const validatedPlayers = parsedPlayers.map(validatePlayer)
+        setPlayers(validatedPlayers)
             console.log('Players loaded from localStorage:', validatedPlayers.length)
           } else {
             console.log('No valid players found in localStorage, setting default players...')
             setPlayers(DEFAULT_PLAYERS)
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_PLAYERS))
           }
-        } catch (error) {
-          console.error('Error parsing saved players:', error)
+      } catch (error) {
+        console.error('Error parsing saved players:', error)
           setPlayers(DEFAULT_PLAYERS)
           localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_PLAYERS))
-        }
-      } else {
+      }
+    } else {
         console.log('No players in localStorage, setting default players...')
         setPlayers(DEFAULT_PLAYERS)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_PLAYERS))
@@ -1396,22 +1039,6 @@ function App() {
     return positionMatch && clubMatch && valueMatch
   })
 
-  // Modificar la función generatePlayerStats para que use estadísticas almacenadas
-  const generatePlayerStats = (playerName: string) => {
-    if (!playerStats[playerName]) {
-      const position = players.find(p => p.name === playerName)?.position || 'GK'
-      const stats = generateRandomStats(position)
-      // Guardar las estadísticas en localStorage
-      const updatedStats = {
-        ...playerStats,
-        [playerName]: stats
-      }
-      setPlayerStats(updatedStats)
-      localStorage.setItem('playerStats', JSON.stringify(updatedStats))
-      return stats
-    }
-    return playerStats[playerName]
-  }
 
   // Cargar las estadísticas guardadas al iniciar
   useEffect(() => {
@@ -1429,20 +1056,6 @@ function App() {
   // Modificar el botón de Market Analysis para que abra transfermarkt.es
   const openTransfermarkt = () => {
     window.open('https://www.transfermarkt.es/', '_blank')
-  }
-
-  // Función para programar una transferencia
-  const scheduleTransfer = (player: Player, newClub: string, transferFee: number, date: string) => {
-    const newTransfer: ScheduledTransfer = {
-      playerId: players.indexOf(player),
-      playerName: player.name,
-      fromClub: player.club,
-      toClub: newClub,
-      transferFee,
-      date,
-      status: 'pending'
-    }
-    setScheduledTransfers(prev => [...prev, newTransfer])
   }
 
   // Función para manejar la selección de jugadores para comparar
@@ -1475,35 +1088,22 @@ function App() {
     }
   }
 
-  // Modificar la función para obtener estadísticas
-  const getPlayerStats = (player: Player): RandomStats => {
-    if (!playerStats[player.name]) {
-      const newStats = generateRandomStats(player.position)
-      setPlayerStats(prev => ({
-        ...prev,
-        [player.name]: newStats
-      }))
-      return newStats
-    }
-    return playerStats[player.name]
-  }
-
   return (
     <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-[#F8FAFC]'}`}>
-      {/* Header */}
+      {/* Header Responsive */}
       <nav className={`${
         darkMode 
           ? 'bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700' 
           : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-gray-200'
-      } border-b`}>
+      } border-b sticky top-0 z-50`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center space-x-3">
+              <div className="flex-shrink-0 flex items-center space-x-2 sm:space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
                   FM
                 </div>
-                <span className={`text-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent`}>
+                <span className={`text-lg sm:text-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent hidden sm:block`}>
                   Football Manager Pro
                 </span>
               </div>
@@ -1561,9 +1161,9 @@ function App() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Botones de funcionalidades adicionales */}
-        <div className="flex justify-end space-x-4 mb-6">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {/* Botones de funcionalidades adicionales - Ahora centrados */}
+        <div className="flex justify-center space-x-4 mb-6">
           <button
             onClick={() => setShowComparison(!showComparison)}
             className={`inline-flex items-center px-4 py-2 text-sm font-medium ${
@@ -1588,12 +1188,12 @@ function App() {
           </button>
         </div>
 
-        {/* Add Player Form */}
+        {/* Add Player Form - Mejorado el padding en móvil */}
         <div className={`${
           darkMode 
             ? 'bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg' 
             : 'bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg'
-        } rounded-xl p-8 mb-8`}>
+        } rounded-xl p-4 sm:p-8 mb-8`}>
           <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-6`}>Add New Player</h2>
           <form onSubmit={handleAddPlayer} className="space-y-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -1743,13 +1343,13 @@ function App() {
           </form>
         </div>
 
-        {/* Filters Panel */}
+        {/* Filters Panel - Mejorado el padding en móvil */}
         {showFilters && (
           <div className={`${
             darkMode 
               ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
               : 'bg-gradient-to-br from-blue-50 to-indigo-50'
-          } shadow-lg rounded-xl p-6 mb-8`}>
+          } shadow-lg rounded-xl p-4 sm:p-6 mb-8`}>
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>
               Filter Players
             </h3>
@@ -1831,13 +1431,13 @@ function App() {
           </div>
         )}
 
-        {/* Player Comparison Panel - Mejorado */}
+        {/* Player Comparison Panel - Mejorado el padding en móvil */}
         {showComparison && (
           <div className={`${
             darkMode 
               ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
               : 'bg-gradient-to-br from-blue-50 to-indigo-50'
-          } shadow-lg rounded-xl p-6 mb-8`}>
+          } shadow-lg rounded-xl p-4 sm:p-6 mb-8`}>
             <div className="flex justify-between items-center mb-6">
               <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                 Player Comparison
@@ -1935,13 +1535,13 @@ function App() {
           </div>
         )}
 
-        {/* Transfer History Panel */}
+        {/* Transfer History Panel - Mejorado el padding en móvil */}
         {showSchedule && (
           <div className={`${
             darkMode 
               ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
               : 'bg-gradient-to-br from-blue-50 to-indigo-50'
-          } shadow-lg rounded-xl p-6 mb-8`}>
+          } shadow-lg rounded-xl p-4 sm:p-6 mb-8`}>
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>
               Transfer History
             </h3>
@@ -1986,13 +1586,101 @@ function App() {
           </div>
         )}
 
-        {/* Players List */}
+        {/* Nueva sección: Squad Statistics Dashboard */}
+        <div className={`${
+          darkMode 
+            ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
+            : 'bg-gradient-to-br from-blue-50 to-indigo-50'
+        } shadow-lg rounded-xl p-4 sm:p-6 mb-8`}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2 sm:mb-0`}>
+              Squad Statistics Dashboard
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Squad Value Card */}
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+              <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Total Squad Value
+              </h4>
+              <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {players.reduce((sum, player) => sum + player.value, 0)}M €
+              </p>
+              <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500 rounded-full" style={{ width: '75%' }}></div>
+              </div>
+            </div>
+
+            {/* Position Distribution Card */}
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+              <h4 className={`text-sm font-medium mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Position Distribution
+              </h4>
+              <div className="space-y-3">
+                {Object.entries(POSITIONS).map(([pos]) => {
+                  const count = players.filter(p => p.position === pos).length
+                  const percentage = (count / players.length) * 100 || 0
+                  return (
+                    <div key={pos} className="flex items-center">
+                      <span className={`text-xs w-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {pos}
+                      </span>
+                      <div className="flex-1 mx-2">
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${
+                              pos === 'GK' ? 'bg-orange-500' :
+                              pos === 'DF' ? 'bg-purple-500' :
+                              pos === 'CM' ? 'bg-green-500' :
+                              'bg-blue-500'
+                            }`}
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                      <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {count}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            {/* Transfer Activity Card */}
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
+              <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Recent Transfer Activity
+              </h4>
+              <div className="space-y-2">
+                {transferHistory.slice(0, 3).map((transfer, index) => (
+                  <div key={index} className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className="flex justify-between items-center">
+                      <span className="truncate">{transfer.playerName}</span>
+                      <span className={transfer.transferFee > 50 ? 'text-green-500' : 'text-yellow-500'}>
+                        {transfer.transferFee}M €
+                      </span>
+                    </div>
+                    <div className="text-xs opacity-75 mt-0.5">
+                      {new Date(transfer.date).toLocaleDateString()}
+                    </div>
+                  </div>
+                ))}
+                {transferHistory.length === 0 && (
+                  <p className="text-xs text-center text-gray-500">No recent transfers</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Players List - Mejorado el padding en móvil */}
         <div className={`${
           darkMode 
             ? 'bg-gradient-to-br from-gray-800 to-gray-900' 
             : 'bg-gradient-to-br from-blue-50 to-indigo-50'
         } shadow-lg rounded-xl overflow-hidden`}>
-          <div className={`px-8 py-6 border-b ${
+          <div className={`px-4 sm:px-8 py-6 border-b ${
             darkMode ? 'border-gray-700' : 'border-blue-100'
           } flex justify-between items-center`}>
             <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -2181,10 +1869,6 @@ function App() {
           }}
           onClose={() => setTransferModalPlayer(null)}
         />
-      )}
-
-      {showMarketAnalysis && (
-        <MarketAnalysisPanel darkMode={darkMode} />
       )}
       
       <Toaster position="top-right" />
