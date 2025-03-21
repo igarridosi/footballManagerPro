@@ -23,6 +23,7 @@ interface Player {
   position: 'GK' | 'DF' | 'CM' | 'FW'
   club: string
   value: number
+  id?: number
 }
 
 interface PlayerProfile extends Player {
@@ -895,7 +896,7 @@ function App() {
       setSubmitting(true)
       const response = await axios.post('/players', {
         name: newPlayer.name.trim(),
-        position: newPlayer.position,  // Remove trim() as position is now from select
+        position: newPlayer.position,
         club: newPlayer.club.trim(),
         value: parseFloat(newPlayer.value.toString())
       })
@@ -914,38 +915,41 @@ function App() {
     }
   }
 
-  const handleTransfer = async (index: number, newClub: string, transferMoney: number) => {
+  const handleTransfer = async (playerId: number, newClub: string, transferValue: number) => {
     try {
-      const actualClub = players[index].club;
-      const response = await axios.put(`/players/${index}/transfer`, null, {
-        params: { new_club: newClub.trim(), transfer_money: transferMoney }
-      })
-      toast.success('Transfer completed successfully!')
-      const updatedPlayers = [...players]
-      updatedPlayers[index] = response.data
-      setPlayers(updatedPlayers)
-      
-      // Añadir al historial de transferencias
-      const newTransfer: TransferHistory = {
-        playerId: index,
-        playerName: players[index].name,
-        fromClub: actualClub,
-        toClub: newClub,
-        transferFee: transferMoney,
-        date: new Date().toISOString().split('T')[0]
+      const playerToTransfer = players.find(p => p.id === playerId)
+      if (!playerToTransfer) {
+        toast.error('Player not found')
+        return
       }
-      setTransferHistory(prev => [newTransfer, ...prev])
-      
-      setTransferNews({
-        player: players[index].name,
-        club: newClub,
-        transferMoney,
-        actualClub
+
+      // Create transfer history entry only for actual transfers between clubs
+      if (playerToTransfer.club !== newClub) {
+        const transferDetails = {
+          id: Date.now(),
+          playerId,
+          playerName: playerToTransfer.name,
+          fromClub: playerToTransfer.club,
+          toClub: newClub,
+          transferFee: transferValue,
+          date: new Date().toISOString()
+        }
+        setTransferHistory([transferDetails, ...transferHistory.slice(0, 2)])
+      }
+
+      // Update player's club and value
+      const updatedPlayers = players.map(player => {
+        if (player.id === playerId) {
+          return { ...player, club: newClub, value: transferValue }
+        }
+        return player
       })
-    } catch (error: any) {
-      console.error('Error transferring player:', error)
-      const errorMessage = error.response?.data?.detail || error.message || 'Transfer failed'
-      toast.error(errorMessage)
+
+      setPlayers(updatedPlayers)
+      toast.success('Transfer completed successfully!')
+    } catch (error) {
+      console.error('Error completing transfer:', error)
+      toast.error('Failed to complete transfer')
     }
   }
 
@@ -1594,7 +1598,7 @@ function App() {
         } shadow-lg rounded-xl p-4 sm:p-6 mb-8`}>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2 sm:mb-0`}>
-              Squad Statistics Dashboard
+              Players Statistics Dashboard
             </h3>
           </div>
 
