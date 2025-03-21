@@ -6,13 +6,13 @@ from .models import Player, PlayerBase, PlayerResponse, players
 
 app = FastAPI(title="Football Manager API")
 
-# Configure CORS - Allow specific origins for development
+# Configure CORS - Allow all origins in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow React frontend origin
-    allow_credentials=False,  # Disable credentials to match frontend
-    allow_methods=["*"],  # Allow all methods
-    allow_headers=["*"],  # Allow all headers
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 @app.exception_handler(Exception)
@@ -36,12 +36,10 @@ async def get_players():
 @app.post("/players", response_model=PlayerResponse, status_code=201)
 async def create_player(player_data: PlayerBase):
     try:
-        # Convert value to float and validate
         value = float(player_data.value)
         if value < 0:
             raise ValueError("Player value cannot be negative")
 
-        # Create new player
         new_player = Player(
             name=player_data.name,
             position=player_data.position,
@@ -90,4 +88,8 @@ async def delete_player(player_id: int):
         deleted_player = players.pop(player_id)
         return deleted_player.to_dict()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"} 

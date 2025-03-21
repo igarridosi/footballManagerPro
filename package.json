@@ -1,6 +1,17 @@
 {
+  "name": "football-manager",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^6.2.2"
+  },
+  "outputs": {
+    "frontend/dist/**": {
+      "use": "@vercel/static"
+    }
   }
 }

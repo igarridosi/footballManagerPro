@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://your-actual-backend-url.com/api/$1"
+      "destination": "https://football-manager-k3r9ulvhb-igarridosis-projects.vercel.app/api/players"
     }
   ]
 } 

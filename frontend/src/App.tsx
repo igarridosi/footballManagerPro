@@ -35,13 +35,16 @@ const POSITIONS = {
   FW: { label: 'Forward', color: 'bg-blue-100 text-blue-800' }
 } as const
 
-const API_URL = 'http://localhost:8000'
-const STORAGE_KEY = 'footballManagerPlayers'
+const API_URL = import.meta.env.PROD 
+  ? 'https://football-manager-ejmb55h27-igarridosis-projects.vercel.app/api' 
+  : 'http://localhost:8000'
 
-// Configure axios defaults
+// Configure axios defaults with CORS settings
 axios.defaults.baseURL = API_URL
 axios.defaults.headers.common['Content-Type'] = 'application/json'
-axios.defaults.withCredentials = false
+delete axios.defaults.headers.common['Origin']  // Remove Origin header
+
+const STORAGE_KEY = 'footballManagerPlayers'
 
 // API Football configuration
 const FOOTBALL_API_KEY = import.meta.env.VITE_FOOTBALL_API_KEY
@@ -352,7 +355,7 @@ function App() {
 
   const handleDelete = async (index: number) => {
     try {
-      const response = await axios.delete(`/players/${index}`)
+      await axios.delete(`/players/${index}`)
       toast.success('Player removed successfully!')
       const updatedPlayers = players.filter((_, i) => i !== index)
       setPlayers(updatedPlayers)
