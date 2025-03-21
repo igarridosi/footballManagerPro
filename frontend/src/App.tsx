@@ -1026,10 +1026,26 @@ function App() {
 
   // Función para ordenar jugadores
   const sortedPlayers = [...players].sort((a, b) => {
-    const aValue = a[sortConfig.key]
-    const bValue = b[sortConfig.key]
-    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
-    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+    if (sortConfig.key === 'name') {
+      return sortConfig.direction === 'asc' 
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name)
+    }
+    if (sortConfig.key === 'position') {
+      return sortConfig.direction === 'asc'
+        ? a.position.localeCompare(b.position)
+        : b.position.localeCompare(a.position)
+    }
+    if (sortConfig.key === 'club') {
+      return sortConfig.direction === 'asc'
+        ? a.club.localeCompare(b.club)
+        : b.club.localeCompare(a.club)
+    }
+    if (sortConfig.key === 'value') {
+      return sortConfig.direction === 'asc'
+        ? a.value - b.value
+        : b.value - a.value
+    }
     return 0
   })
 
