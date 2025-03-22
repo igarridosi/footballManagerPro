@@ -937,17 +937,28 @@ function App() {
           date: new Date().toISOString()
         }
         setTransferHistory([transferDetails, ...transferHistory.slice(0, 2)])
+
+        // Show transfer news
+        setTransferNews({
+          player: playerToTransfer.name,
+          club: newClub,
+          transferMoney: transferValue,
+          actualClub: playerToTransfer.club
+        })
       }
 
-      // Update player's club and value
-      const updatedPlayers = players.map(player => {
-        if (player.id === playerId) {
-          return { ...player, club: newClub, value: transferValue }
-        }
-        return player
-      })
+      // Update only the transferred player
+      const updatedPlayers = players.map(player => 
+        player.id === playerId 
+          ? { ...player, club: newClub, value: transferValue }
+          : player
+      )
 
       setPlayers(updatedPlayers)
+      
+      // Save to localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPlayers))
+      
       toast.success('Transfer completed successfully!')
     } catch (error) {
       console.error('Error completing transfer:', error)
