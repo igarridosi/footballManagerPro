@@ -23,7 +23,7 @@ interface Player {
   position: 'GK' | 'DF' | 'CM' | 'FW'
   club: string
   value: number
-  id?: number
+  id: number
 }
 
 interface PlayerProfile extends Player {
@@ -321,7 +321,7 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
                     className="bg-gray-800 text-white px-2 py-1 rounded w-20"
                   />
                 ) : editedPlayer.shirtNumber}
-              </div>
+            </div>
             </div>
             <div className="flex space-x-2 sm:space-x-4">
               <button
@@ -330,12 +330,12 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
               >
                 <PencilIcon className="h-5 w-5" />
               </button>
-              <button
-                onClick={onClose}
+            <button
+              onClick={onClose}
                 className="text-gray-400 hover:text-white p-2"
-              >
+            >
                 <XMarkIcon className="h-5 w-5" />
-              </button>
+            </button>
             </div>
           </div>
 
@@ -724,7 +724,8 @@ function App() {
     name: '',
     position: 'GK',
     club: '',
-    value: 0
+    value: 0,
+    id: 0
   })
   const [showNewClubInput, setShowNewClubInput] = useState(false)
   const [newClub, setNewClub] = useState('')
@@ -769,10 +770,10 @@ function App() {
 
   // Crear una constante con los jugadores predeterminados
   const DEFAULT_PLAYERS: Player[] = [
-    { name: 'Manuel Neuer', position: 'GK' as const, club: 'Bayern Munich', value: 25 },
-    { name: 'Virgil van Dijk', position: 'DF' as const, club: 'Liverpool', value: 75 },
-    { name: 'Kevin De Bruyne', position: 'CM' as const, club: 'Manchester City', value: 100 },
-    { name: 'Erling Haaland', position: 'FW' as const, club: 'Manchester City', value: 180 }
+    { id: 1, name: 'Manuel Neuer', position: 'GK' as const, club: 'Bayern Munich', value: 25 },
+    { id: 2, name: 'Virgil van Dijk', position: 'DF' as const, club: 'Liverpool', value: 75 },
+    { id: 3, name: 'Kevin De Bruyne', position: 'CM' as const, club: 'Manchester City', value: 100 },
+    { id: 4, name: 'Erling Haaland', position: 'FW' as const, club: 'Manchester City', value: 180 }
   ]
 
   // Modificar la función fetchPlayers para que respete los jugadores guardados
@@ -894,18 +895,19 @@ function App() {
 
     try {
       setSubmitting(true)
-      const response = await axios.post('/players', {
-        name: newPlayer.name.trim(),
-        position: newPlayer.position,
-        club: newPlayer.club.trim(),
-        value: parseFloat(newPlayer.value.toString())
-      })
+      const newId = Math.max(...players.map(p => p.id), 0) + 1
+      const newPlayerWithId = {
+        ...newPlayer,
+        id: newId
+      }
+      
+      const response = await axios.post('/players', newPlayerWithId)
       
       toast.success('Player added successfully!')
       const validatedPlayer = validatePlayer(response.data)
       const updatedPlayers = [...players, validatedPlayer]
       setPlayers(updatedPlayers)
-      setNewPlayer({ name: '', position: 'GK', club: '', value: 0 })
+      setNewPlayer({ name: '', position: 'GK', club: '', value: 0, id: 0 })
     } catch (error: any) {
       console.error('Error adding player:', error)
       const errorMessage = error.response?.data?.detail || error.message || 'Failed to add player'
@@ -1884,7 +1886,7 @@ function App() {
         <TransferModal
           player={transferModalPlayer}
           onTransfer={(newClub, transferMoney) => {
-            handleTransfer(players.indexOf(transferModalPlayer), newClub, transferMoney)
+            handleTransfer(transferModalPlayer.id, newClub, transferMoney)
             setTransferModalPlayer(null)
           }}
           onClose={() => setTransferModalPlayer(null)}
