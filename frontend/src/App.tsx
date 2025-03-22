@@ -1585,23 +1585,31 @@ function App() {
                     key={index}
                     className={`p-4 rounded-lg ${
                       darkMode ? 'bg-gray-700' : 'bg-white'
-                    } flex items-center justify-between`}
+                    } flex flex-row items-center justify-between`}
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        <p className="font-medium">{transfer.playerName}</p>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <span>{transfer.fromClub}</span>
-                          <ArrowRightIcon className="h-4 w-4 mx-2" />
-                          <span>{transfer.toClub}</span>
-                        </div>
+                    <div className="flex flex-col space-y-1">
+                      <p className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                        {transfer.playerName}
+                      </p>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <span className="hidden sm:block">{transfer.fromClub}</span>
+                        <span className="sm:hidden uppercase font-medium">{transfer.fromClub.slice(0, 3)}</span>
+                        <ArrowRightIcon className="h-4 w-4 mx-2 flex-shrink-0" />
+                        <span className="hidden sm:block">{transfer.toClub}</span>
+                        <span className="sm:hidden uppercase font-medium">{transfer.toClub.slice(0, 3)}</span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <div className={`text-right ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                        <p className="font-medium">{transfer.transferFee}M €</p>
-                        <p className="text-sm text-gray-500">{transfer.date}</p>
-                      </div>
+                    <div className="text-right">
+                      <p className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                        {transfer.transferFee}M €
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(transfer.date).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </p>
                     </div>
                   </div>
                 ))
