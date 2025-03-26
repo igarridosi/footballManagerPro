@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build"
+    "build": "cd frontend && npm install && chmod +x node_modules/.bin/tsc && npm run build"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
