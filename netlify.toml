@@ -1,9 +1,13 @@
 [build]
-  command = "pip install -r requirements.txt"
-  publish = "."
+  command = "npm install && npm run build"
+  publish = "frontend/dist"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
 
 [[plugins]]
-  package = "@netlify/plugin-python" 
+  package = "@netlify/plugin-python"
+
+[functions]
+  directory = "backend"
+  node_bundler = "esbuild" 
