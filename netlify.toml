@@ -8,4 +8,4 @@
 
 [functions]
   directory = "backend"
-  node_bundler = "esbuild" 
+  node_bundler = "esbuild"
