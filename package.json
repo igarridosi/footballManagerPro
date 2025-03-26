@@ -7,8 +7,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.2",
-    "@netlify/plugin-python": "^1.0.0"
+    "vite": "^6.2.2"
   },
   "outputs": {
     "frontend/dist/**": {
