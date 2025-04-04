@@ -245,7 +245,6 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
   onClose: () => void,
   onUpdate: (updatedPlayer: Player) => void 
 }) {
-  const [profileData, setProfileData] = useState<Partial<PlayerProfile>>({})
   const [loading, setLoading] = useState(true)
   const [randomStats] = useState<RandomStats>(generateRandomStats(player.position))
   const [isEditing, setIsEditing] = useState(false)
@@ -257,8 +256,7 @@ function PlayerProfileModal({ player, onClose, onUpdate }: {
   useEffect(() => {
     const loadPlayerDetails = async () => {
       setLoading(true)
-      const details = await fetchPlayerDetails(player.name)
-      setProfileData(details)
+      await fetchPlayerDetails(player.name)
       setLoading(false)
     }
 
@@ -1483,7 +1481,7 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {comparison.players.length > 0 ? (
                 <>
-                  {comparison.players.map((player, index) => (
+                  {comparison.players.map((player) => (
                     <div
                       key={player.name}
                       className={`p-4 rounded-lg ${
